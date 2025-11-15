@@ -25,7 +25,7 @@ const menuOptions = [
     {
         id: 4,
         name: 'Profile',
-        path: '/profile'
+        path: '/dashboard'
     }
 ]
 function AppHeader() {

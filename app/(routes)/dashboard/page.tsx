@@ -27,7 +27,7 @@ function Dashboard() {
             <div className='flex items-center justify-between'>
                 <h2 className='font-bold text-2xl'>My Dashboard</h2>
                 <AddNewSessionDialog>
-                    <Button className='transition-transform duration-200 hover:scale-110 cursor-pointer' disabled={!paidUser && historyList?.length > 1}>Consult With a Doctor</Button>
+                    <Button className='transition-transform duration-200 hover:scale-110 cursor-pointer' disabled={!paidUser || historyList?.length >= 1}>Consult With a Doctor</Button>
                 </AddNewSessionDialog>
             </div>
 

@@ -1,13 +1,14 @@
 "use client"
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AddNewSessionDialog from './AddNewSessionDialog'
 import { Badge } from "@/components/ui/badge"
 import { useAuth } from '@clerk/nextjs'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { Loader2Icon, MoveRight } from 'lucide-react'
+import { SessionDetailInfo } from '../medical-agent/[sessionId]/page'
 export type doctorInfo = {
     id: number,
     specialist: string,
@@ -26,7 +27,19 @@ function DoctorAgentCard({ doctorAgent }: props) {
     //@ts-ignore
     const paidUser = has && has({ plan: 'pro' })
     const [loading, setLoading] = useState(false)
+    const [historyList, setHistoryList] = useState<SessionDetailInfo[]>([]);
+    useEffect(() => {
+        GetHistoryList()
+    }, [])
+
+    const GetHistoryList = async () => {
+        const result = await axios.get('/api/session-chat?sessionId=all')
+        console.log(result.data)
+        setHistoryList(result.data)
+    }
+
     const router = useRouter();
+
     const onStartConsultation = async () => {
         //Save all info to database
         //For this you need a new table, so go to schema and add it there
@@ -65,11 +78,11 @@ function DoctorAgentCard({ doctorAgent }: props) {
             <div className='flex justify-center mt-2'>
                 <Button className='mt-2 transition-transform duration-200 
                 hover:scale-110 cursor-pointer'
-                    disabled={!paidUser && doctorAgent.subscriptionRequired}
+                    disabled={(!paidUser && doctorAgent.specialist !== 'General Physician') || historyList?.length >= 1}
                     onClick={onStartConsultation}
                 >Consult{loading ? <Loader2Icon /> : <MoveRight />}</Button>
             </div>
-        </div>
+        </div >
     )
 }
 
